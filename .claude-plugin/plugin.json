@@ -3,6 +3,6 @@
   "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el skill orquestador intelica-brain y sus 3 skills desacoplados: intelica-compression, intelica-markdown e intelica-kb-storage.",
   "version": "0.1.0",
   "author": {
-    "name": "Intelica"
+    "name": "DD"
   }
 }
