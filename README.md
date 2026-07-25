@@ -28,21 +28,30 @@ El plugin ya trae su propio `.mcp.json` (en la raiz de este repo), asi que
 instalar el plugin **registra el servidor automaticamente** — no hace
 falta que cada proyecto tenga su propio `.mcp.json` por separado.
 
-Lo unico que cada persona necesita configurar en su maquina es la variable
-de entorno con el bearer token real (el `.mcp.json` del plugin solo trae
-la referencia `${INTELICA_MCP_TOKEN}`, nunca el valor real, porque este
-repo se comparte con el equipo):
+Lo unico que cada persona necesita configurar en su maquina son dos
+variables de entorno (el `.mcp.json` del plugin solo trae las referencias
+`${INTELICA_MCP_URL}` y `${INTELICA_MCP_TOKEN}`, nunca los valores reales,
+porque este repo se comparte con el equipo):
 
 ```bash
+export INTELICA_MCP_URL="https://<tu-function-url>.lambda-url.us-east-1.on.aws/mcp"
 export INTELICA_MCP_TOKEN="el-bearer-token-real"
 ```
 
-Agregala a tu `~/.zshrc` (o el profile de tu shell) para que persista
-entre sesiones, y reiniciá Claude Desktop despues de setearla.
+Agregalas a tu `~/.zshrc` (o el profile de tu shell) para que persistan
+entre sesiones, y reiniciá Claude Desktop despues de setearlas.
 
-Sin esa variable seteada (o sin el plugin instalado), `intelica-kb-storage`
+Sin esas variables seteadas (o sin el plugin instalado), `intelica-kb-storage`
 cae en un modo local (genera los archivos pero no los sube), sin fallar
 el pipeline.
+
+### Plan Team: puede necesitar habilitacion del owner
+
+En workspaces de Claude Team/Enterprise, agregar un conector MCP remoto
+nuevo suele estar deshabilitado hasta que un admin/owner del workspace
+habilita "Custom Connectors" a nivel organizacion (Settings → Connectors).
+Si el instalador te aparece bloqueado, pedile eso al owner antes de seguir
+— no es un problema de esta configuracion.
 
 ## Instalar el plugin
 
