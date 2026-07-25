@@ -48,26 +48,42 @@ docs/brain-{fecha}-{identificador}
   (4 caracteres) para garantizar que la rama sea unica aunque se corra el
   skill mas de una vez el mismo dia sobre contenido similar.
 
-## PASO 3 — Ejecutar la secuencia contra `intelica-brain-mcp`
+## PASO 3 — Un solo hit contra `intelica-brain-mcp`: `push_knowledge`
 
-1. `create_branch` desde `main` con el nombre calculado en el Paso 2.
-2. Por cada archivo de tema en `files[]`: `create_or_update_file` en la
-   ruta `inbox/{account}/{filename}` (usar `inbox/sin-cuenta/...` si
-   `account` es `null` o `N/A`), con un mensaje de commit que resuma ese
-   archivo puntual (ej. "docs: agrega caso de NAT Gateway en Portal-Prod").
-3. Si `files[]` incluye un `index.md`: si todos los temas comparten la
-   misma `account`, subirlo en `inbox/{account-comun}/{fecha}-index.md`;
-   si los temas tienen `account` distintas, no persistir el `index.md`
-   como archivo — su contenido (la lista de links) se incluye igual en el
-   body del Pull Request del Paso 4.
-4. `create_pull_request` de esa rama hacia `main`, con:
-   - Titulo descriptivo (no generico tipo "nuevo archivo")
-   - Body que incluya: resumen breve, fecha, cantidad de archivos
-     incluidos, categorias documentadas (`category_raw` de cada tema), y
-     un listado de los cambios realizados (archivo por archivo)
-5. Parametro de remitente: usar siempre el valor fijo
-   **`enviado_intelicaBrain`** — no preguntar correo, no usar memoria para
-   esto, no pedir ningun dato personal del usuario.
+En vez de encadenar `create_branch` + `create_or_update_file` (por
+archivo) + `create_pull_request` como 3+ llamadas separadas, usar la tool
+combinada `push_knowledge`, que hace las 3 operaciones en una sola
+invocacion al servidor:
+
+1. Armar el array `files` para `push_knowledge`: un elemento por archivo
+   de tema en `files[]` (la entrada de este skill), con:
+   - `path`: `inbox/{account}/{filename}` (usar `inbox/sin-cuenta/...` si
+     `account` es `null` o `N/A`)
+   - `content`: el contenido ya armado por `intelica-markdown`
+   - `commit_message`: resumen de ese archivo puntual (ej. "docs: agrega
+     caso de NAT Gateway en Portal-Prod")
+
+   Si `files[]` incluye un `index.md`: si todos los temas comparten la
+   misma `account`, agregarlo tambien como un elemento mas (ruta
+   `inbox/{account-comun}/{fecha}-index.md`); si los temas tienen
+   `account` distintas, no incluirlo como archivo — su contenido (la lista
+   de links) va igual en el `body` del PR.
+
+2. Llamar `push_knowledge` una sola vez con:
+   - `base_branch`: `main`
+   - `new_branch_name`: el nombre calculado en el Paso 2
+   - `files`: el array armado en el punto 1
+   - `title`: descriptivo (no generico tipo "nuevo archivo")
+   - `body`: resumen breve, fecha, cantidad de archivos incluidos,
+     categorias documentadas (`category_raw` de cada tema), y un listado
+     de los cambios realizados (archivo por archivo)
+   - `enviado_por`: siempre el valor fijo **`enviado_intelicaBrain`** — no
+     preguntar correo, no usar memoria para esto, no pedir ningun dato
+     personal del usuario.
+
+Si `push_knowledge` no esta disponible pero las tools individuales si
+(servidor desactualizado), usar la secuencia manual como fallback:
+`create_branch` → `create_or_update_file` por archivo → `create_pull_request`.
 
 ## PASO 4 — Nunca mergear
 
