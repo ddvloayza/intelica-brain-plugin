@@ -24,25 +24,25 @@ Este plugin **no reemplaza** el servidor MCP `intelica-brain-mcp`
 `intelica-kb-storage` llama a sus tools (`create_branch`,
 `create_or_update_file`, `create_pull_request`) para persistir en GitHub.
 
-Cada proyecto donde se use este plugin necesita, ademas de instalar el
-plugin, tener configurado su propio `.mcp.json` apuntando al servidor:
+El plugin ya trae su propio `.mcp.json` (en la raiz de este repo), asi que
+instalar el plugin **registra el servidor automaticamente** — no hace
+falta que cada proyecto tenga su propio `.mcp.json` por separado.
 
-```json
-{
-  "mcpServers": {
-    "intelica-brain-mcp": {
-      "type": "http",
-      "url": "https://<tu-function-url>.lambda-url.us-east-1.on.aws/mcp",
-      "headers": {
-        "Authorization": "Bearer ${INTELICA_MCP_TOKEN}"
-      }
-    }
-  }
-}
+Lo unico que cada persona necesita configurar en su maquina es la variable
+de entorno con el bearer token real (el `.mcp.json` del plugin solo trae
+la referencia `${INTELICA_MCP_TOKEN}`, nunca el valor real, porque este
+repo se comparte con el equipo):
+
+```bash
+export INTELICA_MCP_TOKEN="el-bearer-token-real"
 ```
 
-Sin ese `.mcp.json`, `intelica-kb-storage` cae en un modo local (genera
-los archivos pero no los sube), sin fallar el pipeline.
+Agregala a tu `~/.zshrc` (o el profile de tu shell) para que persista
+entre sesiones, y reiniciá Claude Desktop despues de setearla.
+
+Sin esa variable seteada (o sin el plugin instalado), `intelica-kb-storage`
+cae en un modo local (genera los archivos pero no los sube), sin fallar
+el pipeline.
 
 ## Instalar el plugin
 

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "intelica-brain-mcp": {
+      "type": "http",
+      "url": "${INTELICA_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${INTELICA_MCP_TOKEN}"
+      }
+    }
+  }
+}
