@@ -1,7 +1,7 @@
 {
   "name": "intelica-brain",
-  "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el skill orquestador intelica-brain y sus 3 skills desacoplados: intelica-compression, intelica-markdown e intelica-kb-storage.",
-  "version": "0.1.0",
+  "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el pipeline modular intelica-brain (intelica-compression, intelica-markdown, intelica-kb-storage) y una version rapida de un solo paso, intelica-brain-fast, sin preguntas ni preview.",
+  "version": "0.2.0",
   "author": {
     "name": "DD"
   }

@@ -7,8 +7,8 @@
     {
       "name": "intelica-brain",
       "source": "./",
-      "description": "Pipeline de compresion de conversaciones + generacion de markdown + persistencia como PR en intelica-brain-ia, orquestado sobre el servidor MCP intelica-brain-mcp.",
-      "version": "0.1.0"
+      "description": "Pipeline de compresion de conversaciones + generacion de markdown + persistencia como PR en intelica-brain-ia, orquestado sobre el servidor MCP intelica-brain-mcp. Incluye version rapida (intelica-brain-fast) de un solo paso.",
+      "version": "0.2.0"
     }
   ]
 }
