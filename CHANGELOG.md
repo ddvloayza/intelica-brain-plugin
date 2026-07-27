@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - 2026-07-27
+
+- Added `intelica-brain-recall`: read-only skill that checks
+  `INDEX.md`/existing `.md` files in `intelica-brain-ia` (via the new
+  `get_file_contents` tool on `intelica-brain-mcp`) before answering,
+  instead of answering from scratch. Unlike the other skills, this one
+  can trigger on relevant conversation topic, not only explicit
+  invocation. Opens at most 2 files per question.
+- `intelica-brain-mcp` gained a 5th tool, `get_file_contents(path, ref)`
+  — read-only, no path restriction (reads carry no supply-chain risk,
+  unlike writes).
+- `intelica-brain-ia` gained an auto-generated `INDEX.md`, rebuilt by a
+  GitHub Actions workflow on every push to `main` (see that repo).
+
 ## 0.2.0 - 2026-07-26
 
 - Added `intelica-brain-fast`: single-pass version with no intermediate

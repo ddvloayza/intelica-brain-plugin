@@ -1,7 +1,7 @@
 {
   "name": "intelica-brain",
-  "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el pipeline modular intelica-brain (intelica-compression, intelica-markdown, intelica-kb-storage) y una version rapida de un solo paso, intelica-brain-fast, sin preguntas ni preview.",
-  "version": "0.2.0",
+  "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el pipeline modular intelica-brain, la version rapida intelica-brain-fast, y intelica-brain-recall para consultar esa base de conocimiento antes de responder.",
+  "version": "0.3.0",
   "author": {
     "name": "DD"
   }
