@@ -25,9 +25,10 @@ IDs/ARNs/resource names exactly as they appeared.
 
 No documentable content → stop here, say why, don't push anything.
 
-## Step 2 — Draft compact .md (one per topic)
+## Step 2 — Draft compact .md content (one per topic)
 
-`{date}-{slug}.md`, frontmatter:
+For each topic, write the full file content as one string (frontmatter +
+body — the filename and path are computed in Step 3, not here):
 
 ```yaml
 ---
@@ -40,20 +41,32 @@ date: YYYY-MM-DD
 ```
 
 Body: one H1 (= title), then just `## Summary` (2-4 lines) and
-`## Details` (the rest of the write-up). If more than one topic, also
-draft an `index.md` with relative links.
+`## Details` (the rest of the write-up).
 
-## Step 3 — Push (one call, no confirmation)
+If more than one topic and they all share the same `account`, also
+draft a short `index.md` content (relative links to each file, computed
+paths come from Step 3's script output). If accounts differ, skip
+`index.md` — its content just goes in the PR body instead.
 
-Call `push_knowledge` directly (no other skill involved):
-- `base_branch`: `main`
-- `new_branch_name`: `docs/brain-{real-date}-{slug-or-multi}-{4 random chars}`
-- `files`: one entry per drafted file, `path: inbox/{account}/{filename}`
-  (`inbox/no-account/...` if `account` is `N/A`), `content`, short
-  `commit_message`
-- `title`/`body`: brief, auto-written — no need to ask the user
-- `enviado_por`: always `"enviado_intelicaBrain"` — never ask for email
-  or personal data
+## Step 3 — Compute deterministic parts (script, don't reason it out)
+
+Run `scripts/build_push_args.py`, passing the drafted topics as JSON on
+stdin: `[{"title": ..., "account": ..., "content": ..., "commit_message": ...}, ...]`.
+It returns `new_branch_name` and `files` (with `path` already resolved)
+ready to use — don't compute the date, slug, or random suffix yourself,
+the script guarantees a real date and real randomness.
+
+If Step 2 drafted an `index.md`, append it manually to the script's
+`files` output: `path: inbox/{shared-account}/{date}-index.md` (same
+date the script used).
+
+## Step 4 — Push (one call, no confirmation)
+
+Call `push_knowledge` directly (no other skill involved) with
+`base_branch: "main"`, the `new_branch_name`/`files` from Step 3, a
+brief auto-written `title`/`body`, and
+`enviado_por: "enviado_intelicaBrain"` — never ask for email or personal
+data.
 
 If `intelica-brain-mcp` isn't loaded: create the files locally
 (`create_file` + `present_files`) and say so — don't block, don't ask.
