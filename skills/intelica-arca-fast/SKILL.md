@@ -1,13 +1,13 @@
 ---
-name: intelica-brain-fast
-description: "Fast, silent path to turn the current conversation into a Pull Request in ddvloayza/intelica-brain-ia: extracts topics, drafts compact .md files, and pushes them via intelica-brain-mcp in one pass — no intermediate questions, no preview, no verbose mode. Invoke with '/intelica-brain-fast'. Trades some structure for speed compared to the full intelica-brain pipeline (intelica-compression + intelica-markdown + intelica-kb-storage). Does NOT activate automatically based on conversation topic — only with explicit invocation. Never asks the user anything mid-run."
+name: intelica-arca-fast
+description: "Fast, silent path to turn the current conversation into a Pull Request in ITL-ORG-INFRA/intelica-brain-ia: extracts topics, drafts compact .md files, and pushes them via intelica-brain-mcp in one pass — no intermediate questions, no preview, no verbose mode. Invoke with '/intelica-arca-fast'. Trades some structure for speed compared to the full intelica-arca pipeline (intelica-compression + intelica-markdown + intelica-kb-storage). Does NOT activate automatically based on conversation topic — only with explicit invocation. Never asks the user anything mid-run."
 ---
 
-# Intelica Brain Fast
+# Intelica ARCA Fast
 
-Single-pass, no-questions version of the Intelica Brain pipeline. Does
+Single-pass, no-questions version of the Intelica ARCA pipeline. Does
 everything itself (extract → draft → push) without invoking the other
-skills — trades some structure for speed. Use `/intelica-brain` instead
+skills — trades some structure for speed. Use `/intelica-arca` instead
 when you want the richer per-field breakdown or the `--full` preview.
 
 **Never asks anything mid-run.** No preview, no confirmation, no
@@ -63,10 +63,12 @@ date the script used).
 ## Step 4 — Push (one call, no confirmation)
 
 Call `push_knowledge` directly (no other skill involved) with
-`base_branch: "main"`, the `new_branch_name`/`files` from Step 3, a
-brief auto-written `title`/`body`, and
-`enviado_por: "enviado_intelicaBrain"` — never ask for email or personal
-data.
+`base_branch: "main"`, the `new_branch_name`/`files` from Step 3, and a
+brief auto-written `title`/`body`.
+
+Don't pass a sender: the server derives it from the authenticated personal
+token and records it on the PR. Never ask for an email or any other
+personal data.
 
 If `intelica-brain-mcp` isn't loaded: create the files locally
 (`create_file` + `present_files`) and say so — don't block, don't ask.
@@ -77,4 +79,4 @@ If `intelica-brain-mcp` isn't loaded: create the files locally
 - Never invokes `intelica-compression`, `intelica-markdown`, or
   `intelica-kb-storage` — fully self-contained.
 - Doesn't accept credentials pasted in chat for any action.
-- Only activates on explicit `/intelica-brain-fast` invocation.
+- Only activates on explicit `/intelica-arca-fast` invocation.

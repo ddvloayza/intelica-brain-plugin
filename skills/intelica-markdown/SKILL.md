@@ -1,6 +1,6 @@
 ---
 name: intelica-markdown
-description: "Generates one or more .md files optimized for RAG from the structured object produced by intelica-compression — never from the raw conversation. Automatically decides how many files to create (one per topic) and generates an index.md with relative links if there is more than one. NEVER touches Git, NEVER commits, NEVER creates branches or Pull Requests — only returns the file collection. Invoked internally by the orchestrator skill 'intelica-brain', never invoked alone nor triggered automatically."
+description: "Generates one or more .md files optimized for RAG from the structured object produced by intelica-compression — never from the raw conversation. Automatically decides how many files to create (one per topic) and generates an index.md with relative links if there is more than one. NEVER touches Git, NEVER commits, NEVER creates branches or Pull Requests — only returns the file collection. Invoked internally by the orchestrator skill 'intelica-arca', never invoked alone nor triggered automatically."
 ---
 
 # Intelica Markdown Skill

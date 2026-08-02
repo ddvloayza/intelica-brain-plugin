@@ -1,6 +1,6 @@
 ---
 name: intelica-compression
-description: "Compresses a long conversation (AWS infra, development, or Claude/GitHub tooling) into a structured knowledge object, removing greetings, tests, repeated content, and redundant answers. NEVER generates markdown or touches Git — returns only the structured object (YAML) for another skill (intelica-markdown) to turn into files. Invoked internally by the orchestrator skill 'intelica-brain', never invoked alone by the user nor triggered automatically by conversation topic."
+description: "Compresses a long conversation (AWS infra, development, or Claude/GitHub tooling) into a structured knowledge object, removing greetings, tests, repeated content, and redundant answers. NEVER generates markdown or touches Git — returns only the structured object (YAML) for another skill (intelica-markdown) to turn into files. Invoked internally by the orchestrator skill 'intelica-arca', never invoked alone by the user nor triggered automatically by conversation topic."
 ---
 
 # Intelica Compression Skill

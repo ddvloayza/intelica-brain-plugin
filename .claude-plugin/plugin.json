@@ -1,8 +1,22 @@
 {
-  "name": "intelica-brain",
-  "description": "Transforma conversaciones largas en conocimiento estructurado y lo persiste como Pull Request en ddvloayza/intelica-brain-ia. Incluye el pipeline modular intelica-brain, la version rapida intelica-brain-fast, y intelica-brain-recall para consultar esa base de conocimiento antes de responder.",
-  "version": "0.3.0",
+  "name": "intelica-arca",
+  "displayName": "Intelica ARCA",
+  "description": "ARCA (Automated Retrieval & Context Architecture) es la capa de conocimiento de Intelica sobre AWS. Consulta el grafo de conocimiento y la base documental antes de responder — recursos, reglas de security groups, conectividad entre cuentas, decisiones de arquitectura e incidentes pasados — y convierte conversaciones largas en documentacion estructurada, persistida como Pull Request con revision humana. Cubre las cuentas Portal, Interchange, Analytics, Intelica-Network y Audit.",
+  "version": "0.4.0",
+  "keywords": [
+    "aws",
+    "knowledge-base",
+    "knowledge-graph",
+    "rag",
+    "infrastructure",
+    "security-groups",
+    "documentation",
+    "intelica"
+  ],
   "author": {
-    "name": "DD"
-  }
+    "name": "Intelica - Infrastructure"
+  },
+  "homepage": "https://github.com/ddvloayza/intelica-brain-plugin",
+  "repository": "https://github.com/ddvloayza/intelica-brain-plugin",
+  "license": "UNLICENSED"
 }

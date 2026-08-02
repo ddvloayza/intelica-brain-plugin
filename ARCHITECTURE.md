@@ -7,7 +7,7 @@ sesión) — no lo lee Claude al correr un skill, solo lo que cada
 ## Qué es esto
 
 Un plugin de Claude Code/Desktop que convierte conversaciones largas en
-conocimiento persistido como Pull Request en `ddvloayza/intelica-brain-ia`.
+conocimiento persistido como Pull Request en `ITL-ORG-INFRA/intelica-brain-ia`.
 No incluye el servidor MCP en sí — eso vive en el repo separado
 `ddvloayza/intelica-brain-mcp` (Lambda + Function URL). Este plugin solo
 son los Skills que usan las tools de ese servidor.
@@ -17,7 +17,7 @@ son los Skills que usan las tools de ese servidor.
 ```
 Conversacion
      │
-     ├── /intelica-brain ──────────────┐
+     ├── /intelica-arca ──────────────┐
      │   (pipeline modular, 4 pasos)   │
      │                                  │
      │   intelica-compression          │
@@ -30,16 +30,16 @@ Conversacion
      │   intelica-kb-storage            │
      │   (push_knowledge → PR)          │
      │                                  │
-     └── /intelica-brain-fast ─────────┘
+     └── /intelica-arca-fast ─────────┘
          (un solo skill, sin preguntas,
           esquema minimo: title/account/
           category/body, directo a
           push_knowledge)
 ```
 
-Elegí uno u otro según el caso: `/intelica-brain` cuando querés el
+Elegí uno u otro según el caso: `/intelica-arca` cuando querés el
 detalle estructurado por campo (arquitectura, riesgos, decisiones, etc.
-por separado) o el preview con `--full`; `/intelica-brain-fast` cuando
+por separado) o el preview con `--full`; `/intelica-arca-fast` cuando
 solo querés que quede documentado ya, sin fricción ni preguntas.
 
 Ninguno de los dos se activa solo por el tema de la conversación — ambos
@@ -59,7 +59,7 @@ El servidor MCP (`intelica-brain-mcp`) expone `create_branch`,
 `create_or_update_file`, y `create_pull_request` por separado (para uso
 manual/flexible), más una 4ta tool `push_knowledge` que hace las 3
 operaciones en un solo hit — evita 3 round-trips de red por cada
-persistencia. `intelica-kb-storage` y `intelica-brain-fast` usan
+persistencia. `intelica-kb-storage` y `intelica-arca-fast` usan
 `push_knowledge`; las tools sueltas quedan como fallback si el servidor
 está desactualizado.
 
@@ -78,8 +78,11 @@ identificadores literales (IDs, ARNs, nombres de recursos, valores de
   `-fast` para garantizar unicidad sin coordinarse con nada más).
 - Ruta de archivo: `inbox/{account}/{fecha}-{slug}.md` (`inbox/no-account/...`
   si no aplica cuenta).
-- Remitente del PR: siempre el valor fijo `enviado_intelicaBrain` — nunca
-  se pide email ni dato personal.
+- Remitente del PR: lo resuelve el servidor a partir del token personal
+  autenticado — no es un parámetro que mande el skill, y nunca se pide
+  email ni dato personal. (Antes era el valor fijo
+  `enviado_intelicaBrain`; se cambió para que la autoría quede atada a
+  quien autenticó de verdad, en vez de ser autodeclarada por el caller.)
 - Nunca hay tool de merge — el merge queda siempre a revisión humana en
   GitHub (branch protection en `intelica-brain-ia`).
 
@@ -92,12 +95,12 @@ intelica-brain-plugin/
 │   └── marketplace.json   # se instala apuntando a este mismo repo
 ├── .mcp.json               # registra intelica-brain-mcp al instalar el plugin
 ├── skills/
-│   ├── intelica-brain/            # orquestador del pipeline modular
+│   ├── intelica-arca/            # orquestador del pipeline modular
 │   ├── intelica-compression/      # conversacion -> topics[] estructurado
 │   │   └── schema.md               # detalle de los 17 campos (referencia, no siempre se carga)
 │   ├── intelica-markdown/         # topics[] -> files[] (.md)
 │   ├── intelica-kb-storage/       # files[] -> PR (push_knowledge)
-│   └── intelica-brain-fast/       # version de un solo paso, sin preguntas
+│   └── intelica-arca-fast/       # version de un solo paso, sin preguntas
 └── README.md                # instalacion y configuracion para el equipo
 ```
 
@@ -112,5 +115,5 @@ intelica-brain-plugin/
 - Se descartó fusionar `intelica-compression` + `intelica-markdown` en
   uno solo (la primera propuesta para "ir más rápido"): la doc oficial de
   Skills recomienda responsabilidad única + progressive disclosure, no
-  fusión. `intelica-brain-fast` resuelve la necesidad de velocidad de
+  fusión. `intelica-arca-fast` resuelve la necesidad de velocidad de
   otra forma (un skill nuevo, no una fusión de los existentes).

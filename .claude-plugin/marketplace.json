@@ -1,14 +1,28 @@
 {
-  "name": "intelica-brain-marketplace",
+  "name": "intelica-arca-marketplace",
   "owner": {
     "name": "Intelica - Infrastructure"
   },
   "plugins": [
     {
-      "name": "intelica-brain",
+      "name": "intelica-arca",
+      "displayName": "Intelica ARCA",
       "source": "./",
-      "description": "Pipeline de compresion de conversaciones + generacion de markdown + persistencia como PR en intelica-brain-ia, orquestado sobre el servidor MCP intelica-brain-mcp. Incluye version rapida (intelica-brain-fast) y consulta de la base de conocimiento (intelica-brain-recall).",
-      "version": "0.3.0"
+      "description": "ARCA (Automated Retrieval & Context Architecture) es la capa de conocimiento de Intelica sobre AWS. Consulta el grafo de conocimiento y la base documental antes de responder — recursos, reglas de security groups, conectividad entre cuentas, decisiones de arquitectura e incidentes pasados — y convierte conversaciones largas en documentacion estructurada, persistida como Pull Request con revision humana.",
+      "version": "0.4.0",
+      "category": "knowledge",
+      "tags": [
+        "aws",
+        "knowledge-graph",
+        "rag",
+        "infrastructure",
+        "intelica"
+      ],
+      "author": {
+        "name": "Intelica - Infrastructure"
+      },
+      "homepage": "https://github.com/ddvloayza/intelica-brain-plugin",
+      "license": "UNLICENSED"
     }
   ]
 }

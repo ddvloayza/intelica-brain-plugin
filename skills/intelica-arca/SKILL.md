@@ -1,12 +1,12 @@
 ---
-name: intelica-brain
-description: "Orchestrates the full Intelica Brain pipeline: compresses the current conversation (intelica-compression), generates the corresponding .md files (intelica-markdown), and persists them as a Pull Request in intelica-brain-ia (intelica-kb-storage) — in that order, passing each skill's output to the next. Invoke with '/intelica-brain' (backward-compatible alias: '/intelica-kb-storage', 'storage-intelica-brain'). No flag: silent mode, returns only the PR link(s). With '--full': shows the compression object, the generated .md files, and the result before sending. Do NOT activate automatically based on conversation topic — only with these explicit invocations. The 3 skills it orchestrates never call each other, nor are they invoked directly by the user."
+name: intelica-arca
+description: "Orchestrates the full Intelica Brain pipeline: compresses the current conversation (intelica-compression), generates the corresponding .md files (intelica-markdown), and persists them as a Pull Request in intelica-brain-ia (intelica-kb-storage) — in that order, passing each skill's output to the next. Invoke with '/intelica-arca' (backward-compatible alias: '/intelica-kb-storage', 'storage-intelica-arca'). No flag: silent mode, returns only the PR link(s). With '--full': shows the compression object, the generated .md files, and the result before sending. Do NOT activate automatically based on conversation topic — only with these explicit invocations. The 3 skills it orchestrates never call each other, nor are they invoked directly by the user."
 ---
 
-# Intelica Brain — Orchestrator skill
+# Intelica ARCA — Orchestrator skill
 
 Turns the current conversation into knowledge persisted in
-`ddvloayza/intelica-brain-ia`, coordinating 3 skills in sequence. None of
+`ITL-ORG-INFRA/intelica-brain-ia`, coordinating 3 skills in sequence. None of
 them call each other — all coordination (passing one's output to the
 next, handling errors) is done by this skill.
 
@@ -16,10 +16,10 @@ Conversation → intelica-compression (topics[]) → intelica-markdown (files[])
 
 ## Activation
 
-`/intelica-brain` (silent, only the PR link) or `/intelica-brain --full`
+`/intelica-arca` (silent, only the PR link) or `/intelica-arca --full`
 (shows the compression object and the files before sending, and returns
 a summary at the end). Backward-compatible aliases:
-`/intelica-kb-storage`, `storage-intelica-brain`.
+`/intelica-kb-storage`, `storage-intelica-arca`.
 
 Does not activate automatically based on conversation topic — only with
 these explicit invocations.
@@ -45,7 +45,7 @@ ones) and report why. Don't retry automatically without the user asking.
 
 - The 3 skills never call each other — everything goes through this
   orchestrator.
-- PR sender is always `enviado_intelicaBrain` (applied by
-  `intelica-kb-storage`) — never ask for personal data.
+- The PR sender is resolved server-side from the authenticated personal
+  token — it isn't a parameter. Never ask for personal data.
 - Never merge the PR, in any mode.
 - Doesn't accept credentials pasted in chat for any action.

@@ -1,8 +1,36 @@
 # Changelog
 
+## 0.4.0 - 2026-08-02
+
+- Renombrado a **Intelica ARCA** (Automated Retrieval & Context
+  Architecture). Cambia el `name` del plugin (`intelica-brain` →
+  `intelica-arca`), asi que hay que **desinstalar y reinstalar** — no
+  alcanza con actualizar.
+- Los 3 skills invocables se renombran: `/intelica-brain` →
+  `/intelica-arca`, `/intelica-brain-fast` → `/intelica-arca-fast`,
+  `/intelica-brain-recall` → `/intelica-arca-recall`. Los 3 internos
+  (`intelica-compression`, `intelica-markdown`, `intelica-kb-storage`) no
+  cambian: nunca se invocan directo y ya tenian nombre neutro.
+- **Fix**: los skills mandaban `enviado_por` a `push_knowledge`, un
+  parametro que el servidor ya no acepta — habrian fallado en la proxima
+  corrida. La autoria ahora la resuelve el servidor desde el token
+  personal autenticado, lo que ademas la vuelve verificable en vez de
+  autodeclarada por el caller.
+- `intelica-arca-recall` reescrito para el grafo de conocimiento: elige
+  entre el grafo (`find_entity`/`traverse`/`find_documents`) para
+  preguntas sobre un recurso concreto, y los documentos para las
+  narrativas. Su `description` ahora cubre preguntas de conectividad e
+  inventario, no solo incidentes y decisiones.
+- Nuevo `KNOWLEDGE_MODEL.md`: esquema fijo y curado de entidades y
+  relaciones que alimentan el grafo.
+- Metadata del plugin completada (`displayName`, `keywords`, `category`,
+  `homepage`, `repository`, `license`) — es lo que se muestra al
+  instalarlo. Los plugins de Claude Code no soportan icono ni imagen.
+
+
 ## 0.3.0 - 2026-07-27
 
-- Added `intelica-brain-recall`: read-only skill that checks
+- Added `intelica-arca-recall`: read-only skill that checks
   `INDEX.md`/existing `.md` files in `intelica-brain-ia` (via the new
   `get_file_contents` tool on `intelica-brain-mcp`) before answering,
   instead of answering from scratch. Unlike the other skills, this one
@@ -16,10 +44,10 @@
 
 ## 0.2.0 - 2026-07-26
 
-- Added `intelica-brain-fast`: single-pass version with no intermediate
+- Added `intelica-arca-fast`: single-pass version with no intermediate
   questions or preview — extracts, drafts, and pushes in one go, without
   invoking the other 3 skills.
-- Added `scripts/build_push_args.py` (bundled in `intelica-brain-fast`):
+- Added `scripts/build_push_args.py` (bundled in `intelica-arca-fast`):
   computes branch name, file paths, and the random suffix
   deterministically instead of having the model reason them out — real
   date, real randomness, no extra tokens spent on it.
@@ -42,7 +70,7 @@
 
 ## 0.1.0 - 2026-07-25
 
-- First version: `intelica-brain` (orchestrator) plus the 3 decoupled
+- First version: `intelica-arca` (orchestrator) plus the 3 decoupled
   pipeline skills — `intelica-compression`, `intelica-markdown`,
   `intelica-kb-storage`.
 - Bundled `.mcp.json` registering `intelica-brain-mcp` on install, using
