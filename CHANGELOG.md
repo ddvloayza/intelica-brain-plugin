@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.5.0 - 2026-08-04
+
+Rediseño del lado de curacion en tres momentos, reemplazando el pipeline de
+un solo pase.
+
+- **Nuevo `intelica-arca-capture`** (automatico, disparado por el hook
+  `PreCompact`): guarda lo relevante de la conversacion en staging local
+  antes de que la compactacion lo degrade. La compactacion nativa resume
+  para poder seguir trabajando, y en el proceso descarta los identificadores
+  exactos y el razonamiento de las decisiones — justo lo que vale
+  documentar. Nuevo `hooks/precompact-capture.sh`, que hay que configurar a
+  mano en `settings.json` (ver README).
+- **`intelica-arca` reescrito**: ahora consolida los fragimentos de la sesion
+  y persiste el PR en un solo pase. Si la conversacion nunca se compacto,
+  extrae directo de la conversacion viva.
+- **Retirados** `intelica-compression`, `intelica-markdown`,
+  `intelica-kb-storage` e `intelica-arca-fast`. Todos asumian un solo pase
+  sobre la conversacion completa, premisa que el staging local reemplaza.
+- **Los documentos curados ahora emiten fragmento de grafo.** Antes
+  `intelica-markdown` emitia `entities` como lista plana de strings, que
+  `build_graph.py` ignora por no tener tipo — el resultado era que las
+  conversaciones llegaban al `INDEX.md` pero no al grafo. Los tipos
+  `Decision` e `Incident` del esquema no tenian quien los produjera.
+- **El trabajo pesado pasa a Python.** `write_capture.py` (secuencia,
+  directorio de sesion, timestamp) y `consolidate.py` (dedup de entidades
+  por ID acumulando propiedades, dedup de relaciones, agrupado por cuenta).
+  El LLM queda solo con lo que necesita criterio: que extraer, y como
+  resolver contradicciones entre fragmentos. Una sesion larga puede dejar
+  300+ entidades — deduplicarlas leyendolas todas seria caro e
+  inconsistente.
+- Revierte a proposito la decision de "contexto en proceso efimero": el
+  staging local persiste. El motivo es distinto al original — no es guardar
+  borradores a medio hacer, es no perder detalle en la compactacion.
+
 ## 0.4.0 - 2026-08-02
 
 - Renombrado a **Intelica ARCA** (Automated Retrieval & Context

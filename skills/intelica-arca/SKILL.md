@@ -1,51 +1,129 @@
 ---
 name: intelica-arca
-description: "Orchestrates the full Intelica Brain pipeline: compresses the current conversation (intelica-compression), generates the corresponding .md files (intelica-markdown), and persists them as a Pull Request in intelica-brain-ia (intelica-kb-storage) — in that order, passing each skill's output to the next. Invoke with '/intelica-arca' (backward-compatible alias: '/intelica-kb-storage', 'storage-intelica-arca'). No flag: silent mode, returns only the PR link(s). With '--full': shows the compression object, the generated .md files, and the result before sending. Do NOT activate automatically based on conversation topic — only with these explicit invocations. The 3 skills it orchestrates never call each other, nor are they invoked directly by the user."
+description: "Closes out a conversation: consolidates everything intelica-arca-capture staged locally during it, drafts the final .md documents plus their graph fragments, and pushes them as a single Pull Request to ITL-ORG-INFRA/intelica-brain-ia via intelica-brain-mcp — all in one pass. Invoke with '/intelica-arca' (add '--full' to review the drafts before pushing). Works whether the conversation was long (several capture fragments) or short (none — it extracts from the live conversation instead). Does NOT activate on conversation topic, only on explicit invocation. Never merges the PR: that stays a human step in GitHub."
 ---
 
-# Intelica ARCA — Orchestrator skill
+# Intelica ARCA
 
-Turns the current conversation into knowledge persisted in
-`ITL-ORG-INFRA/intelica-brain-ia`, coordinating 3 skills in sequence. None of
-them call each other — all coordination (passing one's output to the
-next, handling errors) is done by this skill.
+Turns a finished conversation into documented knowledge, in one pass:
+consolidate → draft → push. Only output is the PR link, unless `--full`.
 
+Never merges. The PR is the human gate, and there is no merge tool by
+design.
+
+## Step 1 — Consolidate the staged fragments
+
+Get the `session_id` for this conversation, then:
+
+```bash
+python3 scripts/consolidate.py --session <session_id>
 ```
-Conversation → intelica-compression (topics[]) → intelica-markdown (files[]) → intelica-kb-storage (PR)
+
+The script deduplicates entities by ID (merging their properties),
+deduplicates relations, and returns every fact tagged with the fragment it
+came from. Don't do that merging by hand — a long session can stage 300+
+entities and the script does it exactly, for free.
+
+**`fragment_count: 0`** means the conversation never compacted, so nothing
+was staged. That's normal for a short chat: extract directly from the
+conversation you're in, using the same shape the script would have
+returned, and continue.
+
+## Step 2 — Resolve what the script can't
+
+This is the part that needs judgment, and it's why the facts come with
+sequence numbers.
+
+**Contradictions.** A higher sequence came later in the conversation. A
+fact marked `DISCARDED:` overrides what it discards — the final document
+must reflect the conclusion, not the abandoned hypothesis. Don't document
+both as if they were equally true.
+
+**Grouping.** One `.md` per coherent topic. Several unrelated topics in one
+conversation → several files. Don't split a single topic across files, and
+don't merge two unrelated ones to save effort.
+
+**Relevance.** `seen_in` tells you whether an entity showed up once in
+passing or recurred across the conversation. Recurring ones are usually the
+subject; one-offs are usually context.
+
+## Step 3 — Draft the documents
+
+Write the prose in **English**, regardless of the conversation's language —
+measured ~31% fewer tokens for equivalent content. Never translate literal
+identifiers (IDs, ARNs, resource names, `account` values): those are exact
+retrieval keys.
+
+Each topic produces two files.
+
+**The document**, `inbox/<account>/<date>-<slug>.md`:
+
+```yaml
+---
+title: "<what this documents>"
+account: <account, or no-account>
+category_raw: "<category, unnormalized>"
+category_confirmed: false
+date: <YYYY-MM-DD>
+tags: [<relevant tags>]
+graph: <date>-<slug>.graph.yaml
+---
 ```
 
-## Activation
+Then the body: what the situation was, what was found, what was decided,
+and what remains open. Write what someone would need six months from now,
+not a transcript.
 
-`/intelica-arca` (silent, only the PR link) or `/intelica-arca --full`
-(shows the compression object and the files before sending, and returns
-a summary at the end). Backward-compatible aliases:
-`/intelica-kb-storage`, `storage-intelica-arca`.
+**The graph fragment**, `inbox/<account>/<date>-<slug>.graph.yaml`:
 
-Does not activate automatically based on conversation topic — only with
-these explicit invocations.
+```yaml
+documents: <date>-<slug>.md
+account: <account>
+entities:
+  - type: Resource
+    id: i-0abc123
+    resource_type: ec2_instance
+relations:
+  - from: i-0abc123
+    type: BELONGS_TO
+    to: Portal-Prod
+```
 
-## Pipeline
+Use the consolidated entities and relations, minus anything that belongs to
+a different topic's file. Drop `seen_in` — that's working metadata, not
+knowledge. Every entity must conform to `KNOWLEDGE_MODEL.md`; never invent
+a type.
 
-1. **Validate**: if there's no documentable content, abort without
-   invoking anything and explain why.
-2. **`intelica-compression`** on the conversation → `topics[]`. Empty →
-   stop the pipeline, report why. `--full` → show the full object.
-3. **`intelica-markdown`** with unmodified `topics[]` → `files[]`.
-   `--full` → show each file.
-4. **`intelica-kb-storage`** with unmodified `files[]` → PR link (or
-   confirmation of local files if the MCP isn't available — not an
-   error, it's the expected fallback).
-5. **Report**: default → only the link(s). `--full` → link + summary
-   (file count, categories, accounts).
+## Step 4 — Push
 
-If a step fails, stop the pipeline there (don't continue to the next
-ones) and report why. Don't retry automatically without the user asking.
+Feed the drafts to the script that computes the deterministic parts (real
+date, slugs, branch name, random suffix, paths):
+
+```bash
+python3 scripts/build_push_args.py <<'EOF'
+[{"title": "...", "account": "...", "content": "<full .md content>", "commit_message": "docs: ..."}]
+EOF
+```
+
+Add the `.graph.yaml` files to the returned `files` list, using the same
+path prefix as their `.md` sibling, then call `push_knowledge` with
+`base_branch: "main"` and the script's `new_branch_name`/`files`.
+
+Don't pass a sender. The server derives it from the authenticated personal
+token — it isn't a parameter. Never ask the user for an email or any other
+personal data.
+
+With `--full`: show the drafted files and wait for confirmation before
+pushing. Without it: push silently and report only the PR link.
+
+If `intelica-brain-mcp` isn't loaded: write the files locally, say so, and
+don't block.
 
 ## Rules
 
-- The 3 skills never call each other — everything goes through this
-  orchestrator.
-- The PR sender is resolved server-side from the authenticated personal
-  token — it isn't a parameter. Never ask for personal data.
-- Never merge the PR, in any mode.
+- Never merges the PR, in any mode.
+- The staged fragments are **never deleted** — if the PR comes out wrong or
+  you want to re-curate differently, the raw material is still there.
+- The `.yaml` fragments never go to GitHub. Staging isn't knowledge.
 - Doesn't accept credentials pasted in chat for any action.
+- Only activates on explicit `/intelica-arca` invocation.
