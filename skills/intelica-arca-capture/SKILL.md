@@ -1,6 +1,7 @@
 ---
 name: intelica-arca-capture
 description: "Captures what matters from the conversation so far into local staging, right before Claude Code compacts the context. Triggered by the PreCompact hook — NOT invoked by the user, and never activates on conversation topic. Extracts facts, decisions and typed entities (with exact AWS resource IDs) while the full detail is still in context, because compaction summarizes for continuity and drops precisely those identifiers. Writes to ~/.intelica-arca/sessions/<session_id>/ via scripts/write_capture.py. Staging only: nothing reaches GitHub here — that is intelica-arca's job at the end of the chat."
+user-invocable: false
 ---
 
 # Intelica ARCA Capture

@@ -70,6 +70,15 @@ a Claude, que todavía tiene el contexto completo: con exit code 2 frena la
 compactación y le muestra un mensaje. El hook decide *cuándo*; el skill
 hace *qué*.
 
+El hook se registra solo al instalar el plugin, via `hooks/hooks.json` con
+`${CLAUDE_PLUGIN_ROOT}` — no hace falta editar `settings.json`, y la ruta no
+depende de donde este clonado el repo.
+
+Un limite a tener presente: un hook **no puede invocar un skill**. Solo le
+manda el mensaje a Claude por stderr, y Claude decide invocarlo. La captura
+no es deterministica como un cron: depende de que Claude actue sobre ese
+mensaje.
+
 `hooks/precompact-capture.sh` deja un archivo `.capturing` como marca para
 no frenar dos veces la misma compactación — sin eso, hook y skill se
 bloquearían mutuamente en loop. Y si no puede leer el `session_id`, sale
@@ -145,7 +154,8 @@ intelica-brain-plugin/
 │   └── marketplace.json    # se instala apuntando a este mismo repo
 ├── .mcp.json               # registra intelica-brain-mcp al instalar
 ├── hooks/
-│   └── precompact-capture.sh   # dispara la captura (se configura a mano)
+│   ├── hooks.json              # registra el hook al instalar el plugin
+│   └── precompact-capture.sh   # dispara la captura
 ├── skills/
 │   ├── intelica-arca-capture/  # automático: conversación -> staging local
 │   │   └── scripts/write_capture.py

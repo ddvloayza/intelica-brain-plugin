@@ -99,34 +99,17 @@ Una vez que este contenido este pusheado a un repo de GitHub:
 Reemplaza `<owner>/<nombre-del-repo>` por el repo real donde vive esto
 (por ejemplo `ddvloayza/intelica-brain-plugin`).
 
-## Instalar el hook de captura
+## El hook de captura
 
-El plugin instala los skills, pero **el hook hay que configurarlo a mano** —
-Claude Code no lo hace al instalar. Agregá esto a tu `settings.json`
-(`~/.claude/settings.json` para todos tus proyectos, o
-`.claude/settings.json` para uno solo), ajustando la ruta al repo:
+El hook viene **incluido en el plugin** (`hooks/hooks.json`) y se registra
+solo al instalarlo — no hay que tocar `settings.json`. Usa
+`${CLAUDE_PLUGIN_ROOT}` para resolver su propia ruta, asi que no se rompe si
+moves el repo de lugar.
 
-```json
-{
-  "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/Diego/intelica-brain-plugin/hooks/precompact-capture.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-Sin el hook, la captura automatica no corre — pero `/intelica-arca` sigue
-funcionando: al no encontrar fragmentos, extrae directo de la conversacion.
-Se pierde solo el detalle de las conversaciones largas que ya se compactaron.
+Si por algun motivo no queres la captura automatica, deshabilita el plugin o
+quita ese archivo: `/intelica-arca` sigue funcionando igual, solo que al no
+encontrar fragmentos extrae de la conversacion viva. Se pierde el detalle de
+las conversaciones largas ya compactadas, que es justo lo que el hook salva.
 
 ## Uso
 

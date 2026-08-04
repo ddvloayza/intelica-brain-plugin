@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.1 - 2026-08-04
+
+- **El hook ahora viene incluido en el plugin** (`hooks/hooks.json`), asi que
+  se registra solo al instalarlo. Antes habia que pegar un bloque en
+  `settings.json` con una ruta absoluta al script — fragil (se rompe si el
+  repo cambia de lugar) y facil de saltearse. Usa `${CLAUDE_PLUGIN_ROOT}`,
+  que resuelve la ruta del plugin en runtime.
+- `intelica-arca-capture` declara `user-invocable: false`. No cambia el
+  comportamiento — Claude ya lo podia invocar y el usuario no lo veia en el
+  menu `/` — pero deja la intencion explicita en el frontmatter en vez de
+  depender de un efecto lateral no documentado.
+- Documentado un limite verificado: un hook **no puede invocar un skill**.
+  Solo manda el mensaje a Claude por stderr al salir con codigo 2, y Claude
+  decide invocarlo. La captura no es deterministica como un cron.
+
 ## 0.5.0 - 2026-08-04
 
 Rediseño del lado de curacion en tres momentos, reemplazando el pipeline de
