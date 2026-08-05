@@ -43,9 +43,22 @@ AL CERRAR                                  (/intelica-arca)
   vos mergeás  ← único gate humano
 
 
-AL PREGUNTAR                               (intelica-arca-recall)
+AL PREGUNTAR (informativo)                 (intelica-arca-recall)
   find_entity / traverse / find_documents   → grafo
   get_file_contents                         → documentos
+
+
+AL DIAGNOSTICAR (problema activo)          (intelica-arca-diagnose)
+  primero mira el grafo (igual que recall)
+       ↓
+  si no alcanza: propone UN comando de solo lectura, explica que devuelve
+       ↓
+  espera que le pegues la salida — nunca lo ejecuta el
+       ↓
+  parsea, responde, y si hace falta propone el siguiente
+       ↓
+  no persiste nada — lo que se encontro lo agarra capture, como cualquier
+  otra conversacion
 ```
 
 ## Por qué la captura corre en la compactación
@@ -109,7 +122,7 @@ después descartó, decidir cuál sobrevive y cómo se narra. Por eso
 `consolidate.py` devuelve cada hecho con su número de fragmento en vez de
 intentar resolverlo — el orden es la evidencia, la decisión es del skill.
 
-## Por qué 3 skills y no más
+## Por qué 4 skills y no más
 
 Los skills se cargan por *progressive disclosure*: solo `name` +
 `description` está siempre en contexto (~100 tokens cada uno); el
@@ -120,8 +133,19 @@ los cargás todos igual y pagás las descripciones extra sin ganar nada.
 - `capture` y `arca` tienen disparadores distintos (uno automático mitad de
   conversación, otro invocado al final) → separados, obligatoriamente.
 - Consolidar y persistir siempre van juntos → un solo skill.
-- `recall` es el lado de consulta, y es el único que puede auto-activarse
-  por tema → separado.
+- `recall` (consulta lo ya documentado) y `diagnose` (ayuda con un problema
+  activo, proponiendo comandos) responden a la misma señal superficial
+  ("pregunta sobre AWS") pero con intención distinta — uno es informativo,
+  el otro es troubleshooting en vivo con turnos de ida y vuelta. Fusionarlos
+  diluye la identidad de `recall` ("consultar antes de responder") con algo
+  que no siempre corre junto: la mitad de las preguntas de `recall` nunca
+  necesitan proponer un comando.
+- `diagnose` no necesita su propio camino de persistencia — lo que
+  descubre lo captura `capture` igual que cualquier conversación, porque
+  ese mecanismo ya es genérico. Esto simplificó el diseño original del
+  "Provider" (Fase 5 de ARCA v2), que asumía que el propio Provider tenía
+  que parsear y subir el resultado — ya no hace falta, esa parte quedó
+  cubierta por `capture`/`arca`.
 
 ## Por qué el contenido generado está en inglés
 
@@ -163,7 +187,8 @@ intelica-brain-plugin/
 │   │   └── scripts/
 │   │       ├── consolidate.py
 │   │       └── build_push_args.py
-│   └── intelica-arca-recall/   # consulta: grafo + documentos
+│   ├── intelica-arca-recall/   # consulta: grafo + documentos
+│   └── intelica-arca-diagnose/ # troubleshooting: propone comandos, nunca los corre
 ├── KNOWLEDGE_MODEL.md      # esquema fijo de entidades y relaciones
 └── README.md               # instalación y configuración para el equipo
 ```

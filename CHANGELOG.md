@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0 - 2026-08-04
+
+- **Nuevo `intelica-arca-diagnose`.** El "Provider" tipo recetario que
+  habíamos diseñado en la arquitectura de ARCA v2 (reconoce el tipo de
+  problema, propone el comando de solo lectura, la persona lo corre y
+  pega la salida) nunca se había escrito como skill. Se auto-activa con
+  problemas activos ("no puedo conectar A con B", "access denied") —
+  distinto de `intelica-arca-recall`, que es para preguntas informativas
+  sobre lo ya documentado.
+- No tiene su propio camino de persistencia: lo que descubre durante el
+  diagnóstico lo captura `intelica-arca-capture` igual que cualquier otra
+  conversación. Esto simplifica el diseño original, que asumía que el
+  Provider necesitaba parsear y subir el resultado por su cuenta.
+- Primero consulta el grafo (mismas tools que `recall`) antes de proponer
+  nada — no sugiere un comando para algo que ya se puede ver ahí.
+- Nunca propone un comando que cree, modifique o borre un recurso de AWS.
+
 ## 0.5.1 - 2026-08-04
 
 - **El hook ahora viene incluido en el plugin** (`hooks/hooks.json`), asi que

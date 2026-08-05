@@ -10,10 +10,11 @@ largas en documentacion persistida como Pull Request en
 skills/
 ├── intelica-arca-capture/     (automatico, lo dispara el hook PreCompact)
 ├── intelica-arca/             (invocado al cerrar — "/intelica-arca")
-└── intelica-arca-recall/      (consulta antes de responder — el unico que se auto-activa por tema)
+├── intelica-arca-recall/      (consulta lo ya documentado — se auto-activa por tema)
+└── intelica-arca-diagnose/    (troubleshooting en vivo — se auto-activa por tema)
 ```
 
-## Los tres momentos
+## Los cuatro momentos
 
 **Capturar** (`intelica-arca-capture`, automatico): justo antes de que
 Claude Code compacte el contexto, guarda lo relevante de la conversacion en
@@ -37,6 +38,15 @@ concretos — que security groups tiene una instancia, quien usa un SG, que
 hay en una VPC — y los documentos para preguntas narrativas. Ver
 [KNOWLEDGE_MODEL.md](KNOWLEDGE_MODEL.md) para el esquema de entidades y
 relaciones.
+
+**Diagnosticar** (`intelica-arca-diagnose`): distinto de consultar — es
+para un problema activo, no una pregunta informativa ("no puedo conectar A
+con B", "me tira access denied"). Primero mira el grafo por si ya está la
+respuesta; si no, propone el comando exacto de AWS CLI a correr —
+**siempre de solo lectura, nunca lo ejecuta el** — explica qué va a
+devolver, y espera que le pegues la salida para seguir. No persiste nada
+por su cuenta: lo que se descubre ahí lo captura `intelica-arca-capture`
+como cualquier otra conversación.
 
 El merge del PR siempre queda a revision humana — no existe tool de merge,
 a proposito.
