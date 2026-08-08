@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0 - 2026-08-08
+
+- **Ya no hace falta configurar `INTELICA_MCP_TOKEN` a mano.** El servidor
+  `intelica-brain-mcp` ahora anuncia su propio authorization server OAuth
+  (`token-issuer`), asi que "Conectar" en la pantalla de Conectores lleva
+  al login de FinOps directamente — sin token que copiar ni pegar, y sin
+  variables de entorno que configurar en cada maquina. `.mcp.json` se
+  simplifico para reflejar esto: ya no declara un header de auth estatico.
+- Cada persona sigue autenticando con su propia cuenta de FinOps, no con
+  una credencial compartida entre el equipo.
+- El camino anterior (generar un token en `/generate-token` y pegarlo a
+  mano) sigue existiendo para usos fuera de Claude Desktop/Code, pero deja
+  de ser lo que usa este plugin.
+
 ## 0.6.0 - 2026-08-04
 
 - **Nuevo `intelica-arca-diagnose`.** El "Provider" tipo recetario que

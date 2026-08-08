@@ -72,22 +72,18 @@ El plugin ya trae su propio `.mcp.json` (en la raiz de este repo), asi que
 instalar el plugin **registra el servidor automaticamente** — no hace
 falta que cada proyecto tenga su propio `.mcp.json` por separado.
 
-Lo unico que cada persona necesita configurar en su maquina son dos
-variables de entorno (el `.mcp.json` del plugin solo trae las referencias
-`${INTELICA_MCP_URL}` y `${INTELICA_MCP_TOKEN}`, nunca los valores reales,
-porque este repo se comparte con el equipo):
+**No hace falta configurar ninguna variable de entorno.** El servidor
+anuncia su propio authorization server OAuth (`token-issuer`), asi que al
+instalar el plugin y apretar "Conectar" en la pantalla de Conectores,
+Claude te lleva al login de FinOps que ya usas para todo lo demas — con
+esa sesion alcanza, no hay token que copiar ni pegar. Cada persona
+autentica con su propia cuenta de FinOps, no con una credencial compartida.
 
-```bash
-export INTELICA_MCP_URL="https://<tu-function-url>.lambda-url.us-east-1.on.aws/mcp"
-export INTELICA_MCP_TOKEN="el-bearer-token-real"
-```
-
-Agregalas a tu `~/.zshrc` (o el profile de tu shell) para que persistan
-entre sesiones, y reiniciá Claude Desktop despues de setearlas.
-
-Sin esas variables seteadas (o sin el plugin instalado), `intelica-arca`
-cae en un modo local (genera los archivos pero no los sube) en vez de
-fallar.
+Si por algun motivo preferis un token personal fijo en vez del login (por
+ejemplo para automatizar algo fuera de Claude Desktop/Code), todavia podes
+generarlo a mano en `/generate-token` del portal de FinOps y pegarlo en el
+header `Authorization: Bearer <token>` de tu propio cliente MCP — pero ya
+no es el camino que usa este plugin.
 
 ### Plan Team: puede necesitar habilitacion del owner
 
