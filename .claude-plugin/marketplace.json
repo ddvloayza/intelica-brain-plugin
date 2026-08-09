@@ -9,7 +9,7 @@
       "displayName": "Intelica ARCA",
       "source": "./",
       "description": "ARCA (Automated Retrieval & Context Architecture) es la capa de conocimiento de Intelica sobre AWS. Consulta el grafo de conocimiento y la base documental antes de responder — recursos, reglas de security groups, conectividad entre cuentas, decisiones de arquitectura e incidentes pasados — y convierte conversaciones largas en documentacion estructurada, persistida como Pull Request con revision humana.",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "category": "knowledge",
       "tags": [
         "aws",

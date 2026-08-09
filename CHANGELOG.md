@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.8.0 - 2026-08-08
+
+- **Los `.md` generados vuelven a escribirse en español.** El merge del PR
+  es el único gate humano de todo el sistema y lo hace gente que lee
+  español: no tiene sentido poner fricción justo ahí.
+- **El "~31% menos tokens" que justificaba el inglés (0.2.0) era falso.**
+  Estaba afirmado como "medido" en tres archivos sin ningún artefacto de
+  medición detrás. Medido de verdad sobre un documento real del repo
+  (`2026-07-25-analisis-metricas-denver-prd-90-dias.md`, con `tiktoken
+  o200k_base` como proxy): el ahorro real es **9.6%**, no 31%.
+- La razón de la brecha: estos `.md` son densos en identificadores
+  (`itl-0003-portal-prd-ec2-denver-02`, `dbo.vw_active_session_history`,
+  `period=3600`) que tokenizan idéntico en los dos idiomas y nunca se
+  traducen. Solo cambia la prosa alrededor, que es la minoría del archivo.
+  Una comparación de prosa genérica sí daría algo cercano al 30%; sobre
+  estos documentos, no.
+- Los `SKILL.md` siguen en inglés: los lee Claude, no son un entregable
+  que revise una persona, así que ahí el ahorro no le cuesta fricción a
+  nadie.
+- Los identificadores literales se siguen sin traducir, como siempre.
+
 ## 0.7.0 - 2026-08-08
 
 - **Ya no hace falta configurar `INTELICA_MCP_TOKEN` a mano.** El servidor

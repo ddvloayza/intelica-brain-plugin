@@ -147,14 +147,32 @@ los cargás todos igual y pagás las descripciones extra sin ganar nada.
   que parsear y subir el resultado — ya no hace falta, esa parte quedó
   cubierta por `capture`/`arca`.
 
-## Por qué el contenido generado está en inglés
+## Por qué los `.md` están en español y los `SKILL.md` en inglés
 
-El tokenizador es más eficiente con inglés que con español (medido: ~31%
-menos tokens para el mismo contenido). Los `SKILL.md` (instrucciones para
-Claude, nadie los lee como entregable) y el contenido de los `.md`
-generados están en inglés. Los identificadores literales (IDs, ARNs,
-nombres de recursos, valores de `account`) nunca se traducen — son claves
-de retrieval exacto.
+Son dos audiencias distintas, y por eso la regla no es la misma.
+
+Los `.md` generados **los revisa y mergea una persona**, y ese merge es el
+único gate de todo el sistema. El equipo habla español, así que el
+documento se escribe en español: no tiene sentido poner fricción justo en
+el paso que más importa que se haga con atención.
+
+El ahorro de tokens del inglés no lo compensa. Medido sobre un documento
+real del repo (`2026-07-25-analisis-metricas-denver-prd-90-dias.md`, con
+`tiktoken o200k_base` como proxy — no es el tokenizador de Claude): el
+inglés ahorra **9.6%**, no el ~31% que afirmaban antes estos documentos
+sin ningún respaldo. La diferencia se aplasta porque estos `.md` son
+densos en identificadores (`itl-0003-portal-prd-ec2-denver-02`,
+`dbo.vw_active_session_history`, `period=3600`), que tokenizan idéntico
+en los dos idiomas y nunca se traducen. Solo cambia la prosa que los
+rodea, y es la minoría del archivo.
+
+Los `SKILL.md` sí siguen en inglés: son instrucciones que lee Claude, no
+un entregable que lea alguien del equipo, así que ahí el ahorro no compra
+fricción de nadie.
+
+Los identificadores literales (IDs, ARNs, nombres de recursos, valores de
+`account`) nunca se traducen, en ningún caso — son claves de retrieval
+exacto.
 
 ## Convenciones
 

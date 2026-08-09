@@ -49,10 +49,15 @@ subject; one-offs are usually context.
 
 ## Step 3 — Draft the documents
 
-Write the prose in **English**, regardless of the conversation's language —
-measured ~31% fewer tokens for equivalent content. Never translate literal
-identifiers (IDs, ARNs, resource names, `account` values): those are exact
-retrieval keys.
+Write the prose in **Spanish**. A human reviews and merges this document,
+that merge is the only gate in the whole system, and the team reads
+Spanish — don't add friction to the step that most needs care. Writing it
+in English was measured to save only 9.6% of tokens on a real document
+from the repo, because these files are dense in identifiers that tokenize
+the same either way.
+
+Never translate literal identifiers (IDs, ARNs, resource names, `account`
+values): those are exact retrieval keys.
 
 Each topic produces two files.
 
