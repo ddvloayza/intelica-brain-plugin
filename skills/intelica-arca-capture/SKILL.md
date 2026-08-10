@@ -56,6 +56,11 @@ Types available: `Account`, `Resource` (with `resource_type`), `Finding`,
 `Decision`, `Incident`, `Project`. There is no `Person` type — don't
 model who did or said something.
 
+On an `Incident`, `date` is when it **started**, not when it was noticed.
+If the conversation says something had been failing since a date before
+anyone reported it, that earlier date is the one to capture — the gap
+between the two is usually part of what matters.
+
 ## Write the fragment
 
 ```bash

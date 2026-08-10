@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.11.0 - 2026-08-10
+
+- **El vocabulario del modelo ahora está inline en el `SKILL.md`.**
+  `KNOWLEDGE_MODEL.md` se mencionaba por nombre pero nunca con una ruta, y
+  vive en la raíz del repo del plugin — instalado queda en
+  `~/.claude/plugins/cache/.../KNOWLEDGE_MODEL.md`. O sea que **nadie lo
+  leía**: los tipos funcionaban solo porque estaban repetidos inline en
+  `intelica-arca-capture`. Ahora los tipos de entidad, sus campos
+  requeridos y los tipos de relación están en el skill que sí se carga.
+- **`Incident.date` es cuándo EMPEZÓ el incidente**, no cuándo se detectó
+  ni cuándo se documentó. Quedó dicho en los dos skills y en el modelo.
+  Pasó de verdad: el incidente de agotamiento de IPs de pods de EKS se
+  registró con la fecha en que alguien lo reportó (`2026-08-04`), mientras
+  el propio documento decía que venía fallando desde el `2026-07-31` sin
+  que nada alertara. Esos cuatro días de detección tardía se perdían del
+  grafo, y el índice ordenaba y contestaba "cuándo pasó" con la fecha
+  equivocada.
+- `build_push_args.py` avisa —sin bloquear, porque `date` es opcional en el
+  modelo— cuando un `Incident` viene sin fecha. No se puede validar que sea
+  la de inicio y no la de detección: eso es criterio, y por eso está dicho
+  en el skill.
+
 ## 0.10.0 - 2026-08-10
 
 - **`build_push_args.py` ahora genera los archivos en vez de que el LLM

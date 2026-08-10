@@ -83,10 +83,29 @@ document that doesn't exist.
   and what remains open. Markdown, no frontmatter. Write what someone
   would need six months from now, not a transcript.
 - **`entities` / `relations`** — the consolidated ones, minus anything
-  belonging to a different topic's file. Types and required fields come
-  from `KNOWLEDGE_MODEL.md`; the script rejects anything else, so read it
-  rather than guessing. `seen_in` gets dropped automatically — leave it
-  in if it's there.
+  belonging to a different topic's file. `seen_in` gets dropped
+  automatically — leave it in if it's there.
+
+  Entity types, and their required fields beyond `id`:
+  `Account` · `Resource` (needs `resource_type`) · `Finding` (needs
+  `finding_type`) · `Decision` (needs `title`) · `Incident` · `Project`.
+  There is no `Person` type — who did or said something is not modelled,
+  by design. `Document` and `DOCUMENTED_IN` are derived, never declared.
+
+  Relations: `BELONGS_TO` · `HAS_SECURITY_GROUP` · `IN_VPC` · `IN_SUBNET` ·
+  `ASSUMES_ROLE` · `ENCRYPTED_BY` · `ATTACHED_TO` · `REGISTERED_ON` ·
+  `AFFECTS` · `MITIGATED_BY` · `RELATED_TO`.
+
+  **On `Incident`, `date` is when the incident STARTED** — not when it was
+  detected, not when you're writing this. Those can be weeks apart, and
+  the index sorts and answers "when did this happen" from this field, so
+  confusing them makes a correct answer cite a wrong date. It already
+  happened once: an EKS pod-IP exhaustion incident was recorded as
+  `2026-08-04`, the day someone reported it, while the document itself
+  said the oldest pod had been failing since `2026-07-31` with nothing
+  alerting — four days of silence that were part of the finding, lost
+  from the graph. If the start is unknown, use the earliest date the
+  evidence supports and say in the prose that it's approximate.
 
 ## Step 4 — Generate and push
 

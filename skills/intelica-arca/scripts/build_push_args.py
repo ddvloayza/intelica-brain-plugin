@@ -209,6 +209,17 @@ def validate_entities(
                     "grafo no une dos escrituras distintas del mismo tipo."
                 )
 
+        # No se puede validar que la fecha sea la de inicio y no la de
+        # deteccion -- eso es criterio. Pero si se puede exigir que este:
+        # sin ella, el incidente queda fechado por cuando se documento, que
+        # ya paso una vez y perdio cuatro dias de deteccion tardia.
+        if entity_type == "Incident" and not entity.get("date"):
+            warnings.append(
+                f"{where} (`{entity_id}`): `Incident` sin `date`. El indice ordena y "
+                "contesta \"cuando paso\" con ese campo. Recorda que es cuando EMPEZO, "
+                "no cuando se detecto."
+            )
+
     return declared_ids
 
 

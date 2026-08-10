@@ -91,6 +91,21 @@ Incidente ya ocurrido.
 | `date` | no | `2026-07-14` |
 | `severity` | no | `high` |
 
+**`date` es cuando el incidente EMPEZO, no cuando se detecto ni cuando se
+documento.** Las tres pueden estar a semanas de distancia, y confundirlas
+hace que una respuesta correcta cite una fecha equivocada.
+
+Pasó de verdad: el incidente de agotamiento de IPs de pods de EKS quedó
+registrado con `date: 2026-08-04`, que era cuando alguien lo reportó. El
+propio documento decía que el pod más viejo venía fallando desde el
+**2026-07-31 21:24 UTC** sin que nada alertara. Esos cuatro días de
+silencio eran parte del hallazgo, y el grafo los perdía.
+
+Si no se sabe cuándo empezó, usar la fecha más temprana que respalde la
+evidencia y decir en la prosa que es aproximada — nunca la de detección
+como si fuera la de inicio. La fecha en que se documentó ya la lleva el
+`Document`, y no hace falta repetirla acá.
+
 ### `Project`
 Proyecto o repo que ya existe en la organizacion. **No** proyectos
 hipoteticos que se estan planeando — solo cosas que existen.
