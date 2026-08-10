@@ -51,11 +51,17 @@ Unsure, or the graph came back empty? Fall back to the document path.
 
 1. `get_file_contents(path="INDEX.md")`. If it fails (MCP not loaded, or
    nothing merged yet), say so briefly and answer normally — don't block.
-2. Scan the table (title, account, category, path) and pick **at most
-   2** plausible entries. Nothing plausible → say the knowledge base
-   doesn't cover this yet and answer from your own knowledge. Don't
-   force a match.
+2. Go to the **Conversaciones** section — that's where narrative
+   knowledge lives. Match against the **summary and tags**, not just the
+   title: tags deliberately carry alternate phrasings, so a question
+   about "rendimiento" may well be answered by a document titled around
+   "picos de CPU". Pick **at most 2**.
 3. `get_file_contents(path=<candidate>)` for each pick.
+
+Nothing plausible → say the knowledge base doesn't cover this yet and
+answer from your own knowledge. Don't force a match. Retrieval here is
+lexical, not semantic: if the summary and tags don't line up with the
+question, assume it isn't there rather than stretching a weak match.
 
 For AWS inventory, the per-account documents are predictable, so you can
 go straight to one without the index: `aws-inventory/<Account>/` holds

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.9.0 - 2026-08-09
+
+- **Los `.md` curados ahora llevan `summary` en el frontmatter**, y los
+  `tags` pasan a incluir las formas alternativas de preguntar (un
+  documento sobre picos de `CPU` también lleva `rendimiento`,
+  `saturacion`, `lentitud`). Eso es lo único que hay al elegir un
+  documento desde `INDEX.md`: acá no hay búsqueda semántica, así que un
+  documento que no se encuentra por su resumen es un documento que no
+  existe.
+- Es el lugar donde una persona puede codificar el vocabulario propio del
+  equipo — algo que ningún mecanismo de recuperación infiere solo.
+- `intelica-arca-recall` ahora busca contra el resumen y los tags, no
+  solo contra el título, y se le dice explícitamente que la recuperación
+  es léxica: si no calza, asumir que no está en vez de forzar un match
+  débil.
+- Del lado de `intelica-brain-ia` (repo aparte): `build_index.py` separa
+  conversaciones de inventario y arregla el parser de frontmatter, que no
+  leía ninguno de los dos estilos de lista YAML del repo — los tags nunca
+  habían llegado al índice.
+
 ## 0.8.0 - 2026-08-08
 
 - **Los `.md` generados vuelven a escribirse en español.** El merge del PR

@@ -70,10 +70,27 @@ account: <account, or no-account>
 category_raw: "<category, unnormalized>"
 category_confirmed: false
 date: <YYYY-MM-DD>
+summary: "<one or two sentences, single line>"
 tags: [<relevant tags>]
 graph: <date>-<slug>.graph.yaml
 ---
 ```
+
+`summary` and `tags` are what the whole document lookup path runs on, so
+they're worth real attention — they land in `INDEX.md`, and that index is
+all anyone has when deciding whether to open this file. There is no
+semantic search here: a document nobody can find from its summary is a
+document that doesn't exist.
+
+- **`summary`** — what question this document answers, in the words
+  someone would use six months from now. Not "analysis of Denver Prd" but
+  "why Denver Prd peaks at 20:00 and why the backup jobs turned out not to
+  explain it". One line, no line breaks (it goes in a table cell).
+- **`tags`** — include the **alternate ways people would phrase it**, not
+  just the literal terms in the document. A document about `CPU` peaks
+  should also carry `rendimiento`, `saturacion`, `lentitud` if that's how
+  someone might ask. This is the one place where a human can encode the
+  team's own vocabulary, which no retrieval mechanism can infer on its own.
 
 Then the body: what the situation was, what was found, what was decided,
 and what remains open. Write what someone would need six months from now,
