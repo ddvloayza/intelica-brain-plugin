@@ -109,9 +109,25 @@ necesita criterio**.
 | Deduplicar entidades por ID acumulando propiedades | `consolidate.py` |
 | Deduplicar relaciones, agrupar por cuenta | `consolidate.py` |
 | Fecha real, slugs, nombre de rama, sufijo random, rutas | `build_push_args.py` |
+| Validar entidades y relaciones contra `KNOWLEDGE_MODEL.md` | `build_push_args.py` |
+| Serializar el `.md` y el `.graph.yaml`, y aparearlos | `build_push_args.py` |
 | Decidir qué importa de la conversación | skill (criterio) |
 | Resolver contradicciones entre fragmentos | skill (criterio) |
-| Redactar la narrativa | skill (criterio) |
+| Redactar la narrativa, el resumen y los tags | skill (criterio) |
+
+Sobre las dos filas de validación y serialización: la regla no es "el LLM
+escribe y después alguien revisa", es que **el LLM no escribe YAML**. Pasa
+datos estructurados y el script emite los archivos. Un YAML mal indentado,
+una referencia `graph:`/`documents:` que no coincide, o un `.graph.yaml`
+en otro directorio que su `.md` dejan de ser errores posibles en vez de
+errores que hay que cazar.
+
+La validación estaba genuinamente ausente: `build_graph.py` en CI solo
+rechaza entidades sin `id` y relaciones incompletas, nunca el vocabulario.
+Un `type: SecurityGroup` en lugar de `Resource` + `resource_type` pasaba
+el PR, pasaba CI, y quedaba en `graph.json` como un nodo que
+`find_entity(entity_type="security_group")` no encuentra nunca. El error
+es silencioso y solo se manifiesta como "el grafo no sabe eso".
 
 El caso que lo justifica: una sesión larga puede dejar 8 fragmentos con 40
 entidades cada uno. Deduplicar 320 leyéndolas todas es caro y el LLM lo

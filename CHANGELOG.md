@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.10.0 - 2026-08-10
+
+- **`build_push_args.py` ahora genera los archivos en vez de que el LLM
+  escriba YAML a mano**, y valida entidades y relaciones contra
+  `KNOWLEDGE_MODEL.md` antes de generar nada. Recibe datos estructurados
+  (título, resumen, tags, cuerpo, entidades, relaciones) y devuelve el
+  `.md` y su `.graph.yaml` listos, con la referencia cruzada
+  `graph:`/`documents:` coherente en ambos sentidos por construcción.
+- **Cierra un agujero que estaba activo:** el vocabulario del modelo no se
+  chequeaba en ningún punto de la cadena. `build_graph.py` en CI solo
+  rechaza entidades sin `id` y relaciones incompletas, así que un tipo
+  inventado (`SecurityGroup` en vez de `Resource` con
+  `resource_type: security_group`) pasaba el PR, pasaba CI y aterrizaba en
+  `graph.json`, donde ninguna consulta posterior lo encontraba jamás.
+- Detecta: tipos de entidad y de relación inexistentes, campos requeridos
+  faltantes, `Person` (excluida a propósito por privacidad), `Document` y
+  `DOCUMENTED_IN` declarados a mano cuando se derivan solos, `resource_type`
+  que no es snake_case, e IPs usadas como ID. Si algo falla no genera nada
+  y sale con código 1, así que un borrador roto no se puede pushear.
+- Avisa sin bloquear cuando una relación apunta a una entidad declarada en
+  otro documento — eso es legítimo y común.
+- Descarta `seen_in` solo, que antes era un paso manual que se podía olvidar.
+- Corrige una regla que había quedado engañosa: los `.graph.yaml` **sí**
+  van a GitHub; lo que nunca sale de la máquina son los fragmentos de
+  staging (`~/.intelica-arca/sessions/<id>/NNN.json`).
+
 ## 0.9.0 - 2026-08-09
 
 - **Los `.md` curados ahora llevan `summary` en el frontmatter**, y los

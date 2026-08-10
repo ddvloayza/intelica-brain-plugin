@@ -59,22 +59,9 @@ the same either way.
 Never translate literal identifiers (IDs, ARNs, resource names, `account`
 values): those are exact retrieval keys.
 
-Each topic produces two files.
-
-**The document**, `inbox/<account>/<date>-<slug>.md`:
-
-```yaml
----
-title: "<what this documents>"
-account: <account, or no-account>
-category_raw: "<category, unnormalized>"
-category_confirmed: false
-date: <YYYY-MM-DD>
-summary: "<one or two sentences, single line>"
-tags: [<relevant tags>]
-graph: <date>-<slug>.graph.yaml
----
-```
+**Don't write any YAML.** Step 4's script generates both files — the
+frontmatter, the graph fragment, and the cross-reference between them.
+Your job here is the content: the prose, and the structured values below.
 
 `summary` and `tags` are what the whole document lookup path runs on, so
 they're worth real attention — they land in `INDEX.md`, and that index is
@@ -92,44 +79,45 @@ document that doesn't exist.
   someone might ask. This is the one place where a human can encode the
   team's own vocabulary, which no retrieval mechanism can infer on its own.
 
-Then the body: what the situation was, what was found, what was decided,
-and what remains open. Write what someone would need six months from now,
-not a transcript.
+- **`body`** — what the situation was, what was found, what was decided,
+  and what remains open. Markdown, no frontmatter. Write what someone
+  would need six months from now, not a transcript.
+- **`entities` / `relations`** — the consolidated ones, minus anything
+  belonging to a different topic's file. Types and required fields come
+  from `KNOWLEDGE_MODEL.md`; the script rejects anything else, so read it
+  rather than guessing. `seen_in` gets dropped automatically — leave it
+  in if it's there.
 
-**The graph fragment**, `inbox/<account>/<date>-<slug>.graph.yaml`:
+## Step 4 — Generate and push
 
-```yaml
-documents: <date>-<slug>.md
-account: <account>
-entities:
-  - type: Resource
-    id: i-0abc123
-    resource_type: ec2_instance
-relations:
-  - from: i-0abc123
-    type: BELONGS_TO
-    to: Portal-Prod
-```
-
-Use the consolidated entities and relations, minus anything that belongs to
-a different topic's file. Drop `seen_in` — that's working metadata, not
-knowledge. Every entity must conform to `KNOWLEDGE_MODEL.md`; never invent
-a type.
-
-## Step 4 — Push
-
-Feed the drafts to the script that computes the deterministic parts (real
-date, slugs, branch name, random suffix, paths):
+One script validates the drafts, writes both files per topic, and computes
+the deterministic parts (real date, slugs, branch name, paths):
 
 ```bash
 python3 scripts/build_push_args.py <<'EOF'
-[{"title": "...", "account": "...", "content": "<full .md content>", "commit_message": "docs: ..."}]
+[{
+  "title": "...", "account": "...", "category_raw": "...",
+  "summary": "...", "tags": ["..."], "body": "<markdown prose>",
+  "entities": [{"type": "Resource", "id": "i-0abc", "resource_type": "ec2_instance"}],
+  "relations": [{"from": "i-0abc", "type": "BELONGS_TO", "to": "Portal-Prod"}],
+  "commit_message": "docs: ..."
+}]
 EOF
 ```
 
-Add the `.graph.yaml` files to the returned `files` list, using the same
-path prefix as their `.md` sibling, then call `push_knowledge` with
-`base_branch: "main"` and the script's `new_branch_name`/`files`.
+**If it exits non-zero, nothing was generated.** It prints one line per
+problem: an entity type that isn't in the model, a missing
+`resource_type`, an IP used as an ID, a relation type that doesn't exist.
+Fix the draft and run it again — don't work around it by assembling the
+files yourself, and don't push anything. That check is the only thing in
+the entire chain that catches an invented type: CI won't, and a bad node
+that reaches `graph.json` is simply unreachable by every later query.
+
+Warnings (`AVISO`) don't block. A relation pointing at an entity declared
+in another document is normal and expected.
+
+Then call `push_knowledge` with `base_branch: "main"` and the script's
+`new_branch_name` / `files`, unchanged.
 
 Don't pass a sender. The server derives it from the authenticated personal
 token — it isn't a parameter. Never ask the user for an email or any other
@@ -146,6 +134,12 @@ don't block.
 - Never merges the PR, in any mode.
 - The staged fragments are **never deleted** — if the PR comes out wrong or
   you want to re-curate differently, the raw material is still there.
-- The `.yaml` fragments never go to GitHub. Staging isn't knowledge.
+- The staging fragments (`~/.intelica-arca/sessions/<id>/NNN.json`) never
+  go to GitHub — staging is working material, not knowledge. The
+  `.graph.yaml` files the script generates are a different thing entirely
+  and do get pushed, alongside their `.md`.
+- Never hand-assemble the files or bypass the script when it reports an
+  error. An invalid type reaches `graph.json` silently and nothing
+  downstream will catch it.
 - Doesn't accept credentials pasted in chat for any action.
 - Only activates on explicit `/intelica-arca` invocation.
