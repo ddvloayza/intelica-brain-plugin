@@ -35,9 +35,17 @@ fue corta y nunca se compacto, extrae directo de la conversacion viva.
 **Consultar** (`intelica-arca-recall`): usa el grafo de conocimiento
 (`find_entity`, `traverse`, `find_documents`) para preguntas sobre recursos
 concretos — que security groups tiene una instancia, quien usa un SG, que
-hay en una VPC — y los documentos para preguntas narrativas. Ver
-[KNOWLEDGE_MODEL.md](KNOWLEDGE_MODEL.md) para el esquema de entidades y
-relaciones.
+hay en una VPC — y los documentos para preguntas narrativas.
+
+El esquema de entidades y relaciones vive en
+[`KNOWLEDGE_MODEL.md`](https://github.com/ITL-ORG-INFRA/intelica-brain-ia/blob/main/KNOWLEDGE_MODEL.md)
+del repo de conocimiento, no acá: describe qué es válido **en la base**, así
+que va junto a lo que describe. Además es el único repo que `get_file_contents`
+alcanza, así que desde ahí se puede leer en vivo — cuando estaba en este repo
+era inalcanzable, y cualquier intento de consultarlo terminaba en un 404.
+
+El vocabulario está igual **inline** en el `SKILL.md` de `intelica-arca`, que
+es lo que hace que funcione sin ir a buscar nada.
 
 **Diagnosticar** (`intelica-arca-diagnose`): distinto de consultar — es
 para un problema activo, no una pregunta informativa ("no puedo conectar A

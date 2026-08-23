@@ -33,7 +33,7 @@ conversation.
   something asserted earlier turned out to be wrong, write it as
   `"DISCARDED: <claim> — <why>"`. That's what lets the consolidation know
   what didn't survive.
-- **`entities`** — typed, per `KNOWLEDGE_MODEL.md`. This is the part that
+- **`entities`** — typed, per the vocabulary below. This is the part that
   matters most and the part that's lost if deferred.
 - **`relations`** — how those entities connect.
 - **`accounts`** — the AWS accounts involved.

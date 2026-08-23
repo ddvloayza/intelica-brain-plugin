@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.12.0 - 2026-08-20
+
+- **`KNOWLEDGE_MODEL.md` se mudó a `intelica-brain-ia`**, a la raíz del repo
+  de conocimiento. Describe qué entidades y relaciones son válidas **en la
+  base**, así que va junto a lo que describe.
+- **La razón concreta:** `get_file_contents` solo puede leer el repo que
+  apunta `GITHUB_TARGET_REPO`, o sea `intelica-brain-ia`. Mientras el modelo
+  vivió en este repo era **estructuralmente inalcanzable**. Se vio en vivo:
+  el skill decía "leé KNOWLEDGE_MODEL.md", el modelo lo buscó en el único
+  repo que la tool ve, y se comió un 404 de la API de GitHub.
+- Ahora además va con frontmatter, así que `build_index.py` lo indexa y queda
+  encontrable desde `INDEX.md` como cualquier otro documento.
+- Verificado que los ejemplos YAML del propio modelo **no** se cuelan al
+  grafo: `build_graph.py` solo lee el bloque de frontmatter del principio, no
+  los bloques de código. Cero entidades de ejemplo en `graph.json`.
+- El vocabulario sigue **inline** en el `SKILL.md` (0.11.0) — eso es lo que
+  hace que funcione sin ir a buscar nada. El archivo es la fuente para
+  personas y para CI; el inline es la copia operativa.
+
 ## 0.11.0 - 2026-08-10
 
 - **El vocabulario del modelo ahora está inline en el `SKILL.md`.**

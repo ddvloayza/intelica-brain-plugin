@@ -223,9 +223,16 @@ intelica-brain-plugin/
 │   │       └── build_push_args.py
 │   ├── intelica-arca-recall/   # consulta: grafo + documentos
 │   └── intelica-arca-diagnose/ # troubleshooting: propone comandos, nunca los corre
-├── KNOWLEDGE_MODEL.md      # esquema fijo de entidades y relaciones
 └── README.md               # instalación y configuración para el equipo
 ```
+
+`KNOWLEDGE_MODEL.md` ya no está acá: vive en la raíz de `intelica-brain-ia`.
+Describe qué entidades y relaciones son válidas **en la base de conocimiento**,
+así que va junto a lo que describe — y es el único repo que
+`get_file_contents` alcanza, así que desde ahí se puede consultar en vivo.
+Mientras estuvo en este repo era estructuralmente inalcanzable: el skill
+decía "leé KNOWLEDGE_MODEL.md", el modelo lo buscaba en el único repo que
+la tool ve, y se comía un 404.
 
 ## Historial de decisiones relevantes
 
@@ -248,4 +255,6 @@ intelica-brain-plugin/
   hermano `.graph.yaml`, no en el frontmatter: medido sobre el inventario
   real de AWS, el frontmatter llegaba al 85% del archivo (500+ entidades
   por cuenta), lo que hacía que cada lectura gastara tokens en datos que
-  solo le sirven al grafo. Ver `KNOWLEDGE_MODEL.md`.
+  solo le sirven al grafo. Medido de nuevo sobre el repo entero: 848 KB de
+  `.graph.yaml` contra 360 KB de documentos, o sea el 70% de cada archivo si
+  fuera inline. Ver `KNOWLEDGE_MODEL.md` en `intelica-brain-ia`.

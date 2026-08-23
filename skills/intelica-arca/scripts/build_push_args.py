@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Builds the complete `push_knowledge` call from structured data: validates
-the entities and relations against KNOWLEDGE_MODEL.md, writes both the `.md`
+the entities and relations against the curated vocabulary below (transcribed
+from KNOWLEDGE_MODEL.md, which lives in the root of intelica-brain-ia — the
+knowledge repo, not this one), writes both the `.md`
 and its sibling `.graph.yaml`, and computes the deterministic parts (today's
 date, slugs, branch name, paths).
 
